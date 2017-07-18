@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.TextView;
 
 /**
@@ -24,6 +25,8 @@ public class JokeDisplayActivity extends AppCompatActivity {
                 String joke = jokeIntent.getStringExtra("joke");
                 jokeTextView.setText(joke);
             }
+        } else {
+            jokeTextView.setVisibility(View.GONE);
         }
     }
 }
