@@ -55,19 +55,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void tellJoke(View view) {
-//        String joke = Joker.getJoke();
-//        Intent displayJoke = new Intent(this, JokeDisplayActivity.class);
-//        displayJoke.putExtra("joke", joke);
-//        startActivity(displayJoke);
-        new EndpointsAsyncTask().execute(new Pair<Context, String>(this, "Manfred"));
+        new EndpointsAsyncTask().execute(this);
     }
 
-    class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> {
+    class EndpointsAsyncTask extends AsyncTask<Context, Void, String> {
         private MyApi myApiService = null;
         private Context context;
 
         @Override
-        protected String doInBackground(Pair<Context, String>... params) {
+        protected String doInBackground(Context... params) {
             if(myApiService == null) {  // Only do this once
                 MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(),
                         new AndroidJsonFactory(), null)
@@ -86,11 +82,11 @@ public class MainActivity extends AppCompatActivity {
                 myApiService = builder.build();
             }
 
-            context = params[0].first;
-            String name = params[0].second;
+            context = params[0];
+
 
             try {
-                return myApiService.sayHi(name).execute().getData();
+                return myApiService.getJoke().execute().getData();
             } catch (IOException e) {
                 return e.getMessage();
             }
@@ -98,7 +94,10 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+            String joke = result;
+            Intent displayJoke = new Intent(context, JokeDisplayActivity.class);
+            displayJoke.putExtra("joke", joke);
+            startActivity(displayJoke);
         }
     }
 }
